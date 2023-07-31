@@ -1,9 +1,17 @@
 #!/usr/bin/make -f
 
-export DEB_PYTHON_INSTALL_LAYOUT = deb
+include /usr/share/dpkg/architecture.mk
+include /usr/share/dpkg/buildopts.mk
+
+export PYBUILD_VERBOSE=1
+export PYBUILD_SYSTEM=custom
+export PYBUILD_CONFIGURE_ARGS=cd {build_dir}; printf "[binaries]\npython3 = '{interpreter.binary_dv}'\n" > native.ini; meson setup {dir} --wrap-mode=nodownload --buildtype=plain --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=lib/$(DEB_HOST_MULTIARCH) --native-file=native.ini
+export PYBUILD_BUILD_ARGS=cd {build_dir} && LC_ALL=C.UTF-8 ninja -j$(DEB_BUILD_OPTION_PARALLEL) -v
+export PYBUILD_INSTALL_ARGS=cd {build_dir} && LC_ALL=C.UTF-8 DESTDIR={destdir} ninja install
+export PYBUILD_CLEAN_ARGS=rm -rf {dir}/.pybuild
 
 %:
-	dh $@ --buildsystem=pybuild --with python3 --without autoreconf -Smeson
+	dh $@ --buildsystem=pybuild --with python3 --without autoreconf
 
 override_dh_auto_install:
 	dh_auto_install
