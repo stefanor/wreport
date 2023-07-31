@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Enrico Zini <enrico@debian.org>
 Build-Depends:
-  debhelper-compat (= 13), dh-sequence-sphinxdoc, dh-python,
+  debhelper-compat (= 13), dh-sequence-sphinxdoc, dh-python (>= 6.20230604~),
   pkg-config, meson,
   doxygen, python3-breathe,
   liblua5.1-0-dev,
